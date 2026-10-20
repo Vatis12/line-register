@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2F7D60">
+<script>
+// เปิดจากแอป LINE: สั่งให้เปิดใน Safari/Chrome เพราะเบราว์เซอร์ในแอป LINE ไม่ให้ใช้กล้องสด
+if(/\bLine\//i.test(navigator.userAgent)&&location.search.indexOf("openExternalBrowser")<0){location.replace(location.pathname+"?openExternalBrowser=1"+location.hash)}
+</script>
 <title>สแกนเช็กอิน Future of Laundry</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
 <style>
@@ -81,6 +85,7 @@ input:focus-visible,button:focus-visible{outline:3px solid #F2C063;outline-offse
   <div class="frame" aria-hidden="true"></div>
   <div class="camtip" id="camtip">ส่องกล้องไปที่ QR</div>
   <div class="tools">
+    <label class="btn" id="photoBtn" hidden>ถ่ายรูป QR<input type="file" id="photo" accept="image/*" capture="environment" style="position:absolute;opacity:0;width:1px;height:1px"></label>
     <button class="btn" id="typeBtn" type="button">พิมพ์ค้นหา</button>
   </div>
   <div class="sheet" id="sheet" hidden></div>
@@ -128,11 +133,24 @@ input:focus-visible,button:focus-visible{outline:3px solid #F2C063;outline-offse
   function showErr(m){$("loginErr").textContent=m;$("loginErr").hidden=false}
 
   function startCam(){
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){$("camtip").textContent="เครื่องนี้เปิดกล้องไม่ได้ ใช้ปุ่ม พิมพ์ค้นหา";return}
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){camFail("เบราว์เซอร์นี้เปิดกล้องสดไม่ได้ ให้เปิดลิงก์นี้ใน Safari / Chrome");return}
     navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:720}},audio:false})
       .then(function(s){stream=s;var v=$("video");v.srcObject=s;v.play();requestAnimationFrame(tick)})
-      .catch(function(){$("camtip").textContent="ยังไม่ได้อนุญาตกล้อง: กดอนุญาตกล้องในเบราว์เซอร์แล้วรีเฟรชหน้า"});
+      .catch(function(){camFail("เปิดกล้องไม่ได้: กดอนุญาตกล้องแล้วรีเฟรชหน้า หรือเปิดลิงก์นี้ใน Safari / Chrome")});
   }
+  function camFail(m){$("camtip").textContent=m;$("photoBtn").hidden=false}
+  // วิธีสำรอง: ถ่ายรูป QR (ใช้เมื่อเปิดกล้องสดไม่ได้)
+  $("photo").onchange=function(e){
+    var f=e.target.files[0];e.target.value="";if(!f)return;
+    var img=new Image(),url=URL.createObjectURL(f);
+    img.onload=function(){
+      var s=Math.min(1,1200/Math.max(img.width,img.height)),w=Math.round(img.width*s),h=Math.round(img.height*s),cv=$("cv"),ctx=cv.getContext("2d");
+      cv.width=w;cv.height=h;ctx.drawImage(img,0,0,w,h);URL.revokeObjectURL(url);
+      var code=window.jsQR?jsQR(ctx.getImageData(0,0,w,h).data,w,h,{inversionAttempts:"attemptBoth"}):null;
+      if(code&&code.data)lookup(code.data);else{paused=true;sheet('<div class="msg err">อ่าน QR ไม่ได้ ลองถ่ายใหม่ให้ชัด หรือกดพิมพ์ค้นหา</div><button class="btn main" type="button" data-next>ตกลง</button>')}
+    };
+    img.src=url;
+  };
 
   function tick(){
     var v=$("video");
