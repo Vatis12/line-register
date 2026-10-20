@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>จุดพิมพ์ป้ายชื่อ Future of Laundry</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:#EEF4F0;color:#16352A;font:16px/1.5 "IBM Plex Sans Thai","Kanit",system-ui,sans-serif}
+.top{background:#2F7D60;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.top b{font-family:Kanit,sans-serif;font-weight:600;font-size:20px}
+.stat{font-family:Kanit,sans-serif;background:rgba(255,255,255,.18);border-radius:999px;padding:4px 14px}
+.page{max-width:980px;margin:0 auto;padding:20px;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+@media (max-width:820px){.page{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px}
+h2{margin:0;font-family:Kanit,sans-serif;font-weight:600;font-size:20px}
+input{font:inherit;font-size:17px;width:100%;padding:11px 13px;border:1.5px solid #CFE0D6;border-radius:12px;background:#FAFCFB;color:#16352A}
+.btn{font:inherit;font-family:Kanit,sans-serif;font-weight:600;font-size:18px;border:0;border-radius:12px;padding:13px;cursor:pointer;background:#2F7D60;color:#fff}
+.btn.ghost{background:#E4F0EA;color:#1F5C46}
+.btn:disabled{opacity:.6}
+button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offset:2px}
+.msg{border-radius:12px;padding:11px 14px;font-weight:600}
+.msg.err{background:#FDECEA;color:#9B1111}
+.msg.ok{background:#E3F6EA;color:#14653A}
+.msg.wait{background:#FFF4DF;color:#7A4B00}
+.hint{font-size:14px;color:#5E7C70}
+.live{display:flex;align-items:center;gap:10px;font-family:Kanit,sans-serif;font-weight:600;font-size:19px}
+.dot{width:14px;height:14px;border-radius:50%;background:#1E9E5A;box-shadow:0 0 0 0 rgba(30,158,90,.6);animation:p 1.6s infinite}
+.dot.off{background:#C0392B;animation:none}
+@keyframes p{70%{box-shadow:0 0 0 12px rgba(30,158,90,0)}100%{box-shadow:0 0 0 0 rgba(30,158,90,0)}}
+.log{display:flex;flex-direction:column;gap:6px;max-height:340px;overflow:auto}
+.log div{background:#F4F8F6;border-radius:10px;padding:8px 12px;font-size:15px}
+.preview-wrap{display:flex;justify-content:center}
+.preview-wrap .badge{zoom:.6;flex-shrink:0;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+
+/* ป้ายชื่อ 5x7 นิ้ว */
+.badge{flex-shrink:0;width:5in;height:7in;background:#fff;color:#16352A;display:flex;flex-direction:column;overflow:hidden;font-family:Kanit,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.b-head{background:#2F7D60;color:#fff;padding:.22in .3in .2in;text-align:center}
+.b-logos{background:#fff;border-radius:.12in;display:flex;align-items:center;justify-content:center;gap:.22in;padding:.08in .2in;margin:0 auto .14in;width:max-content}
+.b-logos img{display:block}
+.b-logos .club{height:.62in}
+.b-logos .div{height:.3in}
+.b-logos .sep{width:1px;height:.5in;background:#D5E1DA}
+.b-title{font-weight:700;font-size:.36in;line-height:1.05}
+.b-sub{font-weight:500;font-size:.16in;opacity:.92}
+.b-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.2in .3in;gap:.12in}
+.b-name{font-weight:700;line-height:1.12;word-break:break-word}
+.b-biz{font-family:"IBM Plex Sans Thai",Kanit,sans-serif;font-weight:500;font-size:.24in;color:#3D5A4F;line-height:1.25}
+.b-type{font-weight:600;font-size:.26in;border-radius:999px;padding:.03in .3in;background:#E4F0EA;color:#1F5C46}
+.b-type.early{background:#FFF0D6;color:#7A4B00}
+.b-type.supplier{background:#E3ECFA;color:#1E4E9A}
+.b-shirt{font-weight:600;font-size:.2in;color:#7A4B00}
+.b-foot{border-top:1px solid #DCE7E1;padding:.12in .3in .16in;display:flex;flex-direction:column;align-items:center;gap:.06in}
+.b-when{font-size:.15in;color:#3D5A4F}
+.b-spons{display:flex;align-items:center;justify-content:center;gap:.25in}
+.b-spons img{height:.3in;display:block}
+.b-spons img.gs{height:.36in}
+.b-ref{font-size:.13in;color:#7C978C;letter-spacing:.02em}
+
+#printArea{display:none}
+@page{size:5in 7in;margin:0}
+@media print{
+  body{background:#fff}
+  .top,.page{display:none!important}
+  #printArea{display:block}
+  #printArea .badge{page-break-after:always;break-after:page}
+}
+</style>
+</head>
+<body>
+<div class="top"><b>จุดพิมพ์ป้ายชื่อ · Future of Laundry</b><span class="stat" id="stat">ยังไม่เชื่อมต่อ</span></div>
+
+<div class="page">
+  <div style="display:flex;flex-direction:column;gap:20px">
+    <section class="card" id="loginBox">
+      <h2>เข้าสู่ระบบ</h2>
+      <div id="urlRow">
+        <div class="hint" style="margin-bottom:6px">ลิงก์ระบบลงทะเบียน (ลงท้ายด้วย /exec)</div>
+        <input type="url" id="url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
+      </div>
+      <input type="password" id="pin" autocomplete="off" placeholder="รหัสเจ้าหน้าที่">
+      <button class="btn" id="loginBtn" type="button">เริ่มพิมพ์อัตโนมัติ</button>
+      <div class="msg err" id="loginErr" hidden></div>
+    </section>
+
+    <section class="card" id="runBox" hidden>
+      <div class="live"><span class="dot" id="dot"></span><span id="liveText">กำลังรอเช็กอิน… ป้ายจะพิมพ์ออกเอง</span></div>
+      <div class="hint">เปิดหน้านี้ทิ้งไว้ตลอดงาน ห้ามปิดหรือย่อหน้าต่าง ถ้าอินเทอร์เน็ตหลุด ระบบจะต่อใหม่เองและพิมพ์ป้ายที่ค้างให้ครบ</div>
+      <div class="msg wait" id="kioskTip">ถ้ามีหน้าต่างพิมพ์เด้งขึ้นทุกครั้ง แปลว่ายังไม่ได้เปิด Chrome แบบพิมพ์อัตโนมัติ ดูคู่มือข้อ 32</div>
+      <h2>พิมพ์ซ้ำ / พิมพ์ด้วยมือ</h2>
+      <div style="display:flex;gap:10px"><input type="text" id="rp" placeholder="เลขลงทะเบียน เช่น EB-001"><button class="btn" id="rpBtn" type="button" style="white-space:nowrap">พิมพ์ซ้ำ</button></div>
+      <button class="btn ghost" id="testBtn" type="button">พิมพ์ป้ายทดสอบ</button>
+      <h2>พิมพ์ไปแล้ว</h2>
+      <div class="log" id="log"><div class="hint" style="background:none;padding:0">ยังไม่มี</div></div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>ตัวอย่างป้าย (5×7 นิ้ว)</h2>
+    <div class="preview-wrap" id="preview"></div>
+  </section>
+</div>
+
+<div id="printArea"></div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var API="",PIN="",after=null,printing=false,queue=[],timer=null,fails=0;
+  function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function store(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function load(k){try{return localStorage.getItem(k)||""}catch(e){return ""}}
+
+  function call(params){
+    var qs=Object.keys(params).map(function(k){return encodeURIComponent(k)+"="+encodeURIComponent(params[k])}).join("&");
+    return fetch(API+"?"+qs+"&pin="+encodeURIComponent(PIN))
+      .then(function(r){return r.json()})
+      .catch(function(){throw new Error("ติดต่อระบบไม่ได้")})
+      .then(function(j){if(j.error)throw new Error(j.error);return j});
+  }
+
+  function badge(x){
+    var name=String(x.name||"").trim();
+    var len=name.length, fs=len<=12?0.62:len<=18?0.52:len<=26?0.42:0.34;
+    var tcls=x.type==="early"?"early":x.type==="supplier"?"supplier":"";
+    return '<div class="badge">'+
+      '<div class="b-head"><div class="b-logos"><img class="club" src="img/club.png" alt=""><span class="sep"></span><img class="div" src="img/diversey.png" alt=""></div>'+
+      '<div class="b-title">Future of Laundry</div><div class="b-sub">Smart, Sustainable &amp; Profitable</div></div>'+
+      '<div class="b-body"><div class="b-name" style="font-size:'+fs+'in">'+esc(name)+'</div>'+
+      (x.biz?'<div class="b-biz">'+esc(x.biz)+'</div>':'')+
+      '<div class="b-type '+tcls+'">'+esc(x.typeName||"")+'</div>'+
+      (x.shirt?'<div class="b-shirt">เสื้อไซส์ '+esc(x.shirt)+'</div>':'')+'</div>'+
+      '<div class="b-foot"><div class="b-spons"><img src="img/alliance.png" alt=""><img class="gs" src="img/greenseed.png" alt=""></div>'+
+      '<div class="b-when">เสาร์ 7 พ.ย. 2569 · Radisson Blu Sukhumvit</div><div class="b-ref">'+esc(x.ref||"")+'</div></div></div>';
+  }
+  var sample={name:"สมชาย ใจดี",biz:"ร้านซักอบรีด ตัวอย่าง",type:"early",typeName:"Early Bird",shirt:"XL",ref:"EB-000"};
+  $("preview").innerHTML=badge(sample);
+
+  // ลิงก์ระบบ
+  var fromHash=(location.hash.match(/[#&]u=([^&]+)/)||[])[1];
+  if(fromHash){store("fol-api",decodeURIComponent(fromHash));history.replaceState(null,"",location.pathname)}
+  if(load("fol-api")){$("url").value=load("fol-api");$("urlRow").hidden=true}
+  $("pin").value=load("fol-pin");
+
+  $("loginBtn").onclick=function(){
+    var u=$("url").value.trim().split("#")[0].replace(/\?.*$/,""),p=$("pin").value.trim();
+    $("loginErr").hidden=true;
+    if(!/^https:\/\/script\.google\.com\/.+/.test(u)){err("ใส่ลิงก์ระบบที่ขึ้นต้นด้วย https://script.google.com/");$("urlRow").hidden=false;return}
+    if(!p){err("ใส่รหัสเจ้าหน้าที่");return}
+    API=u;PIN=p;$("loginBtn").disabled=true;
+    call({api:"queue",after:""}).then(function(r){
+      store("fol-api",API);store("fol-pin",PIN);
+      // เริ่มจากรายการล่าสุด ไม่พิมพ์ของเก่าย้อนหลัง (ถ้าเคยเปิดไว้ในเครื่องนี้ จะพิมพ์ต่อจากที่ค้าง)
+      var saved=Number(load("fol-print-after"));
+      after=(saved&&saved<=r.last&&r.last-saved<=40)?saved:r.last;
+      $("loginBox").hidden=true;$("runBox").hidden=false;poll();
+    }).catch(function(e){err(e.message)}).then(function(){$("loginBtn").disabled=false});
+  };
+  function err(m){$("loginErr").textContent=m;$("loginErr").hidden=false}
+
+  function poll(){
+    clearTimeout(timer);
+    call({api:"queue",after:after}).then(function(r){
+      fails=0;setLive(true);
+      r.items.forEach(function(x){if(x.seq>after){queue.push(x);after=x.seq}});
+      store("fol-print-after",String(after));
+      next();
+    }).catch(function(e){fails++;setLive(false,e.message)}).then(function(){timer=setTimeout(poll,fails?5000:2500)});
+  }
+  function setLive(ok,m){
+    $("dot").className="dot"+(ok?"":" off");
+    $("liveText").textContent=ok?"กำลังรอเช็กอิน… ป้ายจะพิมพ์ออกเอง":"เชื่อมต่อไม่ได้ ("+m+") กำลังลองใหม่…";
+    $("stat").textContent=ok?"เชื่อมต่อแล้ว":"ขาดการเชื่อมต่อ";
+  }
+
+  function next(){
+    if(printing||!queue.length)return;
+    printing=true;
+    var x=queue.shift();
+    $("printArea").innerHTML=badge(x);
+    $("preview").innerHTML=badge(x);
+    var imgs=[].slice.call($("printArea").querySelectorAll("img"));
+    Promise.all([document.fonts?document.fonts.ready:Promise.resolve()].concat(imgs.map(function(i){return i.complete?0:new Promise(function(ok){i.onload=i.onerror=ok})})))
+      .then(function(){
+        setTimeout(function(){
+          window.print();
+          addLog(x);
+          setTimeout(function(){printing=false;next()},1200);
+        },150);
+      });
+  }
+  function addLog(x){
+    var l=$("log");if(l.querySelector(".hint"))l.innerHTML="";
+    var d=document.createElement("div");
+    var t=new Date();d.textContent=("0"+t.getHours()).slice(-2)+":"+("0"+t.getMinutes()).slice(-2)+"  "+x.ref+"  "+x.name;
+    l.insertBefore(d,l.firstChild);
+  }
+
+  $("rpBtn").onclick=function(){
+    var ref=$("rp").value.trim().toUpperCase();if(!ref)return;
+    $("rpBtn").disabled=true;
+    call({api:"reprint",ref:ref}).then(function(){$("rp").value="";poll()})
+      .catch(function(e){alertMsg(e.message)}).then(function(){$("rpBtn").disabled=false});
+  };
+  $("rp").addEventListener("keydown",function(e){if(e.key==="Enter")$("rpBtn").click()});
+  $("testBtn").onclick=function(){queue.push(sample);next()};
+  function alertMsg(m){var d=document.createElement("div");d.className="msg err";d.textContent=m;$("log").insertBefore(d,$("log").firstChild);setTimeout(function(){d.remove()},5000)}
+})();
+</script>
+</body>
+</html>

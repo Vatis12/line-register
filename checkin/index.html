@@ -187,10 +187,12 @@ input:focus-visible,button:focus-visible{outline:3px solid #F2C063;outline-offse
     if(x.type==="early"&&x.shirt)h+='<div class="shirt">เสื้อไซส์ '+esc(x.shirt)+'</div>';
     h+='<div class="kv"><span>ร้าน/บริษัท</span><span>'+esc(x.biz||"-")+'</span><span>เบอร์โทร</span><span>'+esc(x.phone)+'</span><span>สถานะ</span><span>'+esc(x.status)+'</span></div>';
     var cls="";
-    if(x.checkin){cls="dup";h+='<div class="msg err big">⚠ เช็กอินไปแล้วเมื่อ '+esc(String(x.checkin).replace("✓ ",""))+'</div><button class="btn main" type="button" data-next>สแกนคนต่อไป</button>'}
+    if(x.checkin){cls="dup";h+='<div class="msg err big">⚠ เช็กอินไปแล้วเมื่อ '+esc(String(x.checkin).replace("✓ ",""))+'</div><button class="btn ghost" type="button" data-rp>🖨 พิมพ์ป้ายชื่อซ้ำ</button><button class="btn main" type="button" data-next>สแกนคนต่อไป</button>'}
     else if(state==="force")h+='<div class="msg wait">สถานะยังเป็น "'+esc(x.status)+'" ตรวจสลิปหรือส่งโต๊ะแอดมินก่อน</div><button class="btn warn" type="button" data-go="1">ตรวจแล้ว เช็กอินต่อ</button><button class="btn ghost" type="button" data-next>ยกเลิก สแกนต่อ</button>';
     else h+='<button class="btn ok" type="button" data-go="0">OK เช็กอิน</button><button class="btn ghost" type="button" data-next>ยกเลิก สแกนต่อ</button>';
     sheet(h,cls);
+    var rp=$("sheet").querySelector("[data-rp]");
+    if(rp)rp.onclick=function(){rp.disabled=true;rp.textContent="กำลังส่งพิมพ์…";call({api:"reprint",ref:x.ref}).then(function(){rp.textContent="✓ ส่งไปพิมพ์แล้ว"}).catch(function(e){rp.disabled=false;rp.textContent="ลองอีกครั้ง ("+e.message+")"})};
     var g=$("sheet").querySelector("[data-go]");
     if(g)g.onclick=function(){confirmIn(x,g.getAttribute("data-go")==="1",g)};
   }
