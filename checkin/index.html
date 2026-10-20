@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2F7D60">
+<title>สแกนเช็กอิน Future of Laundry</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%}
+body{background:#0E1F18;color:#16352A;font:16px/1.5 "IBM Plex Sans Thai","Kanit",system-ui,sans-serif}
+.top{background:#2F7D60;color:#fff;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));display:flex;justify-content:space-between;align-items:center;gap:10px}
+.top b{font-family:Kanit,sans-serif;font-weight:600;font-size:18px}
+.stat{font-family:Kanit,sans-serif;font-size:16px;background:rgba(255,255,255,.18);border-radius:999px;padding:4px 12px;white-space:nowrap}
+.page{max-width:520px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+.card{background:#fff;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+h2{margin:0;font-family:Kanit,sans-serif;font-weight:600;font-size:20px}
+input{font:inherit;font-size:18px;width:100%;padding:12px 14px;border:1.5px solid #CFE0D6;border-radius:12px;background:#FAFCFB;color:#16352A}
+input:focus-visible,button:focus-visible{outline:3px solid #F2C063;outline-offset:2px}
+.btn{font:inherit;font-family:Kanit,sans-serif;font-weight:600;font-size:19px;border:0;border-radius:14px;padding:15px;width:100%;cursor:pointer;text-align:center}
+.btn.main{background:#2F7D60;color:#fff}
+.btn.ok{background:#1E9E5A;color:#fff;font-size:26px;padding:20px}
+.btn.warn{background:#E8A33C;color:#2B1C00}
+.btn.ghost{background:#E4F0EA;color:#1F5C46}
+.btn:disabled{opacity:.6}
+.hint{font-size:14px;color:#5E7C70}
+.msg{border-radius:12px;padding:12px 14px;font-weight:600}
+.msg.err{background:#FDECEA;color:#9B1111}
+.msg.ok{background:#E3F6EA;color:#14653A}
+.msg.wait{background:#FFF4DF;color:#7A4B00}
+/* กล้อง */
+.cam{position:relative;background:#000;overflow:hidden;height:calc(100vh - 56px);height:calc(100dvh - 56px)}
+.cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.frame{position:absolute;left:50%;top:40%;width:64vmin;height:64vmin;max-width:340px;max-height:340px;transform:translate(-50%,-50%);border-radius:22px;box-shadow:0 0 0 9999px rgba(0,0,0,.45);border:4px solid #F2C063}
+.camtip{position:absolute;left:0;right:0;top:calc(40% + min(32vmin,170px) + 16px);text-align:center;color:#fff;font-family:Kanit,sans-serif;font-size:20px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.tools{position:absolute;left:12px;right:12px;bottom:max(14px,env(safe-area-inset-bottom));display:flex;gap:10px}
+.tools .btn{background:rgba(255,255,255,.92);color:#1F5C46;font-size:17px;padding:13px}
+/* แผ่นผลลัพธ์ */
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:22px 22px 0 0;padding:18px 16px;padding-bottom:max(18px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;max-height:85%;overflow:auto;box-shadow:0 -6px 24px rgba(0,0,0,.3)}
+.sheet.dup{border-top:8px solid #C0392B}
+.sheet.done{border-top:8px solid #1E9E5A}
+.name{font-family:Kanit,sans-serif;font-weight:600;font-size:28px;line-height:1.2}
+.tag{display:inline-block;font-family:Kanit,sans-serif;font-weight:600;font-size:15px;border-radius:8px;padding:2px 10px;background:#E4F0EA;color:#1F5C46;margin-right:6px}
+.tag.eb{background:#FFF0D6;color:#7A4B00}
+.tag.sp{background:#E3ECFA;color:#1E4E9A}
+.shirt{font-family:Kanit,sans-serif;font-weight:700;font-size:34px;color:#7A4B00;background:#FFF0D6;border-radius:12px;padding:4px 16px;align-self:flex-start}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:15px}
+.kv span:nth-child(odd){color:#5E7C70}
+.big{font-family:Kanit,sans-serif;font-weight:700;font-size:24px}
+.flash{position:absolute;inset:0;background:rgba(30,158,90,.97);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-family:Kanit,sans-serif;text-align:center;padding:20px}
+.flash .ic{font-size:90px;line-height:1}
+.flash .t{font-size:30px;font-weight:700}
+.flash .n{font-size:22px}
+.list{display:flex;flex-direction:column;gap:8px}
+.pick{font:inherit;text-align:left;border:1.5px solid #CFE0D6;background:#FAFCFB;border-radius:12px;padding:10px 12px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="top"><b>สแกนเช็กอิน</b><span class="stat" id="stat">–</span></div>
+
+<!-- ตั้งค่า / เข้าสู่ระบบ -->
+<div class="page" id="loginBox">
+  <section class="card">
+    <h2>เข้าสู่ระบบเช็กอิน</h2>
+    <div id="urlRow">
+      <div class="hint" style="margin-bottom:6px">ลิงก์ระบบลงทะเบียน (ลิงก์ที่ลงท้ายด้วย /exec) ใส่ครั้งแรกครั้งเดียว</div>
+      <input type="url" id="url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
+    </div>
+    <input type="password" id="pin" inputmode="numeric" autocomplete="off" placeholder="รหัสเจ้าหน้าที่">
+    <button class="btn main" id="loginBtn" type="button">เข้าสู่ระบบและเปิดกล้อง</button>
+    <div class="msg err" id="loginErr" hidden></div>
+    <button class="btn ghost" id="changeUrl" type="button" hidden>เปลี่ยนลิงก์ระบบ</button>
+  </section>
+</div>
+
+<!-- กล้อง -->
+<div class="cam" id="cam" hidden>
+  <video id="video" playsinline muted autoplay></video>
+  <div class="frame" aria-hidden="true"></div>
+  <div class="camtip" id="camtip">ส่องกล้องไปที่ QR</div>
+  <div class="tools">
+    <button class="btn" id="typeBtn" type="button">พิมพ์ค้นหา</button>
+  </div>
+  <div class="sheet" id="sheet" hidden></div>
+  <div class="flash" id="flash" hidden><div class="ic">✓</div><div class="t">เช็กอินสำเร็จ</div><div class="n" id="flashName"></div></div>
+</div>
+<canvas id="cv" hidden></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var API="", PIN="", stream=null, paused=false, busy=false, lastCode="", lastAt=0;
+  function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function store(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}
+  function load(k){try{return localStorage.getItem(k)||""}catch(e){return ""}}
+  function setStats(s){if(s)$("stat").textContent="มาแล้ว "+s.done+" / "+s.total}
+
+  function call(params){
+    var qs=Object.keys(params).map(function(k){return encodeURIComponent(k)+"="+encodeURIComponent(params[k])}).join("&");
+    return fetch(API+(API.indexOf("?")>=0?"&":"?")+qs+"&pin="+encodeURIComponent(PIN),{redirect:"follow"})
+      .then(function(r){return r.json()})
+      .catch(function(){throw new Error("ติดต่อระบบไม่ได้ ตรวจอินเทอร์เน็ตหรือลิงก์ระบบ")})
+      .then(function(j){if(j.error)throw new Error(j.error);return j});
+  }
+
+  // ลิงก์ระบบ: จาก #u=… หรือที่เคยบันทึกไว้
+  var fromHash=(location.hash.match(/[#&]u=([^&]+)/)||[])[1];
+  if(fromHash){store("fol-api",decodeURIComponent(fromHash));history.replaceState(null,"",location.pathname)}
+  var savedApi=load("fol-api");
+  if(savedApi){$("url").value=savedApi;$("urlRow").hidden=true;$("changeUrl").hidden=false}
+  $("changeUrl").onclick=function(){$("urlRow").hidden=false;$("changeUrl").hidden=true;$("url").focus()};
+  $("pin").value=load("fol-pin");
+
+  $("loginBtn").onclick=function(){
+    var u=$("url").value.trim().split("#")[0], p=$("pin").value.trim();
+    $("loginErr").hidden=true;
+    if(!/^https:\/\/script\.google(usercontent)?\.com\/.+/.test(u)){showErr("ใส่ลิงก์ระบบที่ขึ้นต้นด้วย https://script.google.com/… และลงท้ายด้วย /exec");$("urlRow").hidden=false;return}
+    if(!p){showErr("ใส่รหัสเจ้าหน้าที่");return}
+    API=u.replace(/\?.*$/,"");PIN=p;$("loginBtn").disabled=true;$("loginBtn").textContent="กำลังเข้าสู่ระบบ…";
+    call({api:"login"}).then(function(r){
+      store("fol-api",API);store("fol-pin",PIN);setStats(r.stats);
+      $("loginBox").hidden=true;$("cam").hidden=false;startCam();
+    }).catch(function(e){showErr(e.message)}).then(function(){$("loginBtn").disabled=false;$("loginBtn").textContent="เข้าสู่ระบบและเปิดกล้อง"});
+  };
+  function showErr(m){$("loginErr").textContent=m;$("loginErr").hidden=false}
+
+  function startCam(){
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){$("camtip").textContent="เครื่องนี้เปิดกล้องไม่ได้ ใช้ปุ่ม พิมพ์ค้นหา";return}
+    navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:720}},audio:false})
+      .then(function(s){stream=s;var v=$("video");v.srcObject=s;v.play();requestAnimationFrame(tick)})
+      .catch(function(){$("camtip").textContent="ยังไม่ได้อนุญาตกล้อง: กดอนุญาตกล้องในเบราว์เซอร์แล้วรีเฟรชหน้า"});
+  }
+
+  function tick(){
+    var v=$("video");
+    if(!paused&&!busy&&v.readyState===v.HAVE_ENOUGH_DATA&&window.jsQR){
+      var cv=$("cv"),ctx=cv.getContext("2d",{willReadFrequently:true}),w=v.videoWidth,h=v.videoHeight;
+      // อ่านเฉพาะกลางภาพ (บริเวณกรอบ) ให้เร็วขึ้น
+      var side=Math.min(w,h)*0.8,sx=(w-side)/2,sy=(h-side)/2,out=Math.min(600,side);
+      cv.width=out;cv.height=out;ctx.drawImage(v,sx,sy,side,side,0,0,out,out);
+      var code=jsQR(ctx.getImageData(0,0,out,out).data,out,out,{inversionAttempts:"dontInvert"});
+      if(code&&code.data&&(code.data!==lastCode||Date.now()-lastAt>6000)){
+        lastCode=code.data;lastAt=Date.now();if(navigator.vibrate)navigator.vibrate(80);lookup(code.data);
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function lookup(q){
+    if(busy)return;busy=true;paused=true;
+    sheet('<div class="msg wait">กำลังค้นหา…</div>');
+    call({api:"lookup",q:q}).then(function(r){
+      busy=false;setStats(r.stats);
+      if(!r.results.length){sheet('<div class="msg err big">ไม่พบข้อมูล</div><div class="hint">ลองพิมพ์ค้นหาด้วยเบอร์โทรหรือชื่อ หรือส่งไปโต๊ะแอดมิน</div><button class="btn main" type="button" data-next>สแกนคนต่อไป</button>');return}
+      if(r.results.length===1){showPerson(r.results[0]);return}
+      var h='<div class="big">พบ '+r.results.length+' รายการ เลือกคนที่ใช่</div><div class="list">';
+      r.results.forEach(function(x,i){h+='<button class="pick" type="button" data-i="'+i+'"><b>'+esc(x.name)+'</b> · '+esc(x.ref)+(x.checkin?' · <span style="color:#9B1111">เช็กอินแล้ว</span>':'')+'<br><span class="hint">'+esc(x.biz||"")+' · '+esc(x.phone)+'</span></button>'});
+      sheet(h+'</div><button class="btn ghost" type="button" data-next>ยกเลิก สแกนต่อ</button>');
+      Array.prototype.forEach.call($("sheet").querySelectorAll("[data-i]"),function(b){b.onclick=function(){showPerson(r.results[+b.getAttribute("data-i")])}});
+    }).catch(function(e){busy=false;sheet('<div class="msg err">'+esc(e.message)+'</div><button class="btn main" type="button" data-next>สแกนใหม่</button>')});
+  }
+
+  function showPerson(x,state){
+    var tcls=x.type==="early"?"tag eb":x.type==="supplier"?"tag sp":"tag";
+    var h='<div><span class="'+tcls+'">'+esc(x.typeName)+'</span><span class="tag">'+esc(x.ref)+'</span></div><div class="name">'+esc(x.name)+'</div>';
+    if(x.type==="early"&&x.shirt)h+='<div class="shirt">เสื้อไซส์ '+esc(x.shirt)+'</div>';
+    h+='<div class="kv"><span>ร้าน/บริษัท</span><span>'+esc(x.biz||"-")+'</span><span>เบอร์โทร</span><span>'+esc(x.phone)+'</span><span>สถานะ</span><span>'+esc(x.status)+'</span></div>';
+    var cls="";
+    if(x.checkin){cls="dup";h+='<div class="msg err big">⚠ เช็กอินไปแล้วเมื่อ '+esc(String(x.checkin).replace("✓ ",""))+'</div><button class="btn main" type="button" data-next>สแกนคนต่อไป</button>'}
+    else if(state==="force")h+='<div class="msg wait">สถานะยังเป็น "'+esc(x.status)+'" ตรวจสลิปหรือส่งโต๊ะแอดมินก่อน</div><button class="btn warn" type="button" data-go="1">ตรวจแล้ว เช็กอินต่อ</button><button class="btn ghost" type="button" data-next>ยกเลิก สแกนต่อ</button>';
+    else h+='<button class="btn ok" type="button" data-go="0">OK เช็กอิน</button><button class="btn ghost" type="button" data-next>ยกเลิก สแกนต่อ</button>';
+    sheet(h,cls);
+    var g=$("sheet").querySelector("[data-go]");
+    if(g)g.onclick=function(){confirmIn(x,g.getAttribute("data-go")==="1",g)};
+  }
+
+  function confirmIn(x,force,btn){
+    btn.disabled=true;btn.textContent="กำลังบันทึก…";
+    call({api:"confirm",ref:x.ref,force:force?"1":"0"}).then(function(r){
+      setStats(r.stats);
+      if(r.ok){
+        if(navigator.vibrate)navigator.vibrate([60,40,60]);
+        $("flashName").textContent=r.row.name+(r.row.type==="early"&&r.row.shirt?" · เสื้อ "+r.row.shirt:"");
+        $("sheet").hidden=true;$("flash").hidden=false;
+        setTimeout(function(){$("flash").hidden=true;resume()},1400);
+      } else showPerson(r.row,r.needForce?"force":"");
+    }).catch(function(e){btn.disabled=false;btn.textContent="ลองอีกครั้ง";var d=document.createElement("div");d.className="msg err";d.textContent=e.message;$("sheet").appendChild(d)});
+  }
+
+  function sheet(html,cls){
+    var s=$("sheet");s.className="sheet"+(cls?" "+cls:"");s.innerHTML=html;s.hidden=false;
+    Array.prototype.forEach.call(s.querySelectorAll("[data-next]"),function(b){b.onclick=resume});
+    var f=s.querySelector("input");if(f)f.focus();
+  }
+  function resume(){$("sheet").hidden=true;paused=false;lastAt=Date.now()}
+
+  $("typeBtn").onclick=function(){
+    paused=true;
+    sheet('<div class="big">ค้นหาด้วยมือ</div><input type="text" id="q" placeholder="เลขลงทะเบียน · เบอร์โทร · ชื่อ" autocomplete="off"><button class="btn main" type="button" id="qGo">ค้นหา</button><button class="btn ghost" type="button" data-next>กลับไปสแกน</button>');
+    var go=function(){var v=$("q").value.trim();if(v)lookup(v)};
+    $("qGo").onclick=go;$("q").addEventListener("keydown",function(e){if(e.key==="Enter")go()});
+  };
+})();
+</script>
+</body>
+</html>
