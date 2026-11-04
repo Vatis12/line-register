@@ -64,18 +64,20 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
 .b-spons img.gs{height:.29in}
 .b-ref{font-size:.11in;color:#7C978C;letter-spacing:.02em}
 
-/* ด้านหลัง: QR เพจ Facebook ชมรม */
-.back{background:#2F7D60;color:#fff;align-items:center;text-align:center;padding:.28in .26in .22in;gap:.12in}
+/* ด้านหลัง: QR เพจ Facebook + LINE Official ของชมรม */
+.back{background:#2F7D60;color:#fff;align-items:center;justify-content:space-evenly;text-align:center;padding:.22in .2in .18in;gap:.06in}
 .k-logo{background:#fff;border-radius:.1in;padding:.06in .16in}
 .k-logo img{height:.56in;display:block}
 .k-h{font-weight:700;font-size:.3in;line-height:1.1}
-.k-s{font-weight:500;font-size:.15in;opacity:.92;margin-top:-.06in}
-.k-qr{background:#fff;border-radius:.16in;padding:.12in;margin-top:.04in}
-.k-qr img{width:2.15in;height:2.15in;display:block}
-.k-fb{display:flex;align-items:center;gap:.08in;font-weight:600;font-size:.17in}
-.k-fb svg{width:.24in;height:.24in;flex-shrink:0}
-.k-url{font-family:"IBM Plex Sans Thai",Kanit,sans-serif;font-size:.13in;opacity:.9;margin-top:-.06in}
-.k-club{margin-top:auto;font-size:.13in;line-height:1.35;opacity:.92}
+.k-s{font-weight:500;font-size:.14in;opacity:.92;margin-top:-.06in}
+.k-qrs{display:grid;grid-template-columns:1fr 1fr;gap:.12in;width:100%;margin-top:.06in}
+.k-card{background:#fff;color:#16352A;border-radius:.14in;padding:.1in .08in .1in;display:flex;flex-direction:column;align-items:center;gap:.05in}
+.k-card img{width:1.56in;height:1.56in;display:block}
+.k-lbl{display:flex;align-items:center;gap:.05in;font-weight:700;font-size:.15in;line-height:1.1}
+.k-lbl svg{width:.2in;height:.2in;flex-shrink:0}
+.k-url{font-family:"IBM Plex Sans Thai",Kanit,sans-serif;font-size:.1in;color:#557065;line-height:1.2}
+.k-cta{font-weight:600;font-size:.16in}
+.k-club{font-size:.13in;line-height:1.35;opacity:.92}
 
 #printArea{display:none}
 @page{size:4in 6in;margin:0}
@@ -107,7 +109,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
       <div class="live"><span class="dot" id="dot"></span><span id="liveText">กำลังรอเช็กอิน… ป้ายจะพิมพ์ออกเอง</span></div>
       <div class="hint">เปิดหน้านี้ทิ้งไว้ตลอดงาน ห้ามปิดหรือย่อหน้าต่าง ถ้าอินเทอร์เน็ตหลุด ระบบจะต่อใหม่เองและพิมพ์ป้ายที่ค้างให้ครบ</div>
       <div class="msg wait" id="kioskTip">ถ้ามีหน้าต่างพิมพ์เด้งขึ้นทุกครั้ง แปลว่ายังไม่ได้เปิด Chrome แบบพิมพ์อัตโนมัติ ดูคู่มือข้อ 32</div>
-      <h2>วิธีพิมพ์ด้านหลัง (QR เพจชมรม)</h2>
+      <h2>วิธีพิมพ์ด้านหลัง (QR Facebook + LINE ชมรม)</h2>
       <div class="mode">
         <label><input type="radio" name="mode" value="front"><span><b>พิมพ์ด้านหลังไว้ล่วงหน้า (แนะนำ)</b><br><span class="hint">ด้านหลังเหมือนกันทุกใบ พิมพ์ทีเดียวก่อนวันงาน แล้วใส่กระดาษกลับด้านเข้าเครื่อง ระบบพิมพ์แค่ด้านหน้าตอนเช็กอิน</span></span></label>
         <label><input type="radio" name="mode" value="both"><span><b>พิมพ์หน้า-หลังทีละคน</b><br><span class="hint">เฉพาะเครื่องที่พิมพ์ 2 หน้าเองได้ ต้องตั้ง "พิมพ์สองด้าน" ในหน้าต่างพิมพ์ครั้งแรก</span></span></label>
@@ -160,12 +162,16 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
       '<div class="b-when">เสาร์ 7 พ.ย. 2569 · Radisson Blu Sukhumvit</div><div class="b-ref">'+esc(x.ref||"")+'</div></div></div>';
   }
   function back(){
+    var fb='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#1877F2"/><path fill="#fff" d="M13.4 19.5v-6.1h2.1l.3-2.4h-2.4V9.5c0-.7.2-1.2 1.2-1.2h1.3V6.2c-.2 0-1-.1-1.9-.1-1.9 0-3.1 1.1-3.1 3.2V11H8.8v2.4h2.1v6.1z"/></svg>';
+    var ln='<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#06C755"/><path fill="#fff" d="M12 5.2c-4.1 0-7.4 2.7-7.4 6 0 3 2.6 5.4 6.1 5.9.2 0 .6.2.7.4.1.2 0 .6 0 .8l-.1.7c0 .2-.2.8.7.4s4.9-2.9 6.7-4.9c1.2-1.3 1.8-2.7 1.8-4.2 0-3.4-3.3-6.1-7.4-6.1z"/></svg>';
     return '<div class="badge back">'+
       '<div class="k-logo"><img src="img/club.png" alt=""></div>'+
       '<div class="k-h">ติดตามข่าวสารชมรม</div><div class="k-s">อบรม สัมมนา และกิจกรรมของคนทำธุรกิจซักรีด</div>'+
-      '<div class="k-qr"><img src="img/fb-qr.png" alt="QR เพจ Facebook ชมรม"></div>'+
-      '<div class="k-fb"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#fff"/><path fill="#2F7D60" d="M13.4 19.5v-6.1h2.1l.3-2.4h-2.4V9.5c0-.7.2-1.2 1.2-1.2h1.3V6.2c-.2 0-1-.1-1.9-.1-1.9 0-3.1 1.1-3.1 3.2V11H8.8v2.4h2.1v6.1z"/></svg><span>สแกนเพื่อกดติดตามเพจ</span></div>'+
-      '<div class="k-url">facebook.com/laundryclub2017</div>'+
+      '<div class="k-qrs">'+
+        '<div class="k-card"><img src="img/fb-qr.png" alt="QR เพจ Facebook ชมรม"><div class="k-lbl">'+fb+'<span>เพจ Facebook</span></div><div class="k-url">facebook.com/laundryclub2017</div></div>'+
+        '<div class="k-card"><img src="img/line-qr.png" alt="QR LINE Official ชมรม"><div class="k-lbl">'+ln+'<span>LINE Official</span></div><div class="k-url">lin.ee/XctogxE</div></div>'+
+      '</div>'+
+      '<div class="k-cta">สแกนเพื่อกดติดตามและเพิ่มเพื่อน</div>'+
       '<div class="k-club">ชมรมผู้ประกอบการซักรีด<br>Laundry &amp; Dryclean Club</div></div>';
   }
   $("previewBack").innerHTML=back();
