@@ -160,7 +160,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
   function badge(x,kind){
     kind=kind||fmode;
     var name=String(x.name||"").trim();
-    var len=name.length, fs=len<=12?0.5:len<=18?0.42:len<=26?0.34:0.28;
+    var len=name.length, fs=len<=14?0.34:len<=22?0.3:len<=30?0.27:0.24;
     var tcls=x.type==="early"?"early":x.type==="supplier"?"supplier":"";
     if(kind==="blank")name="";
     return '<div class="badge '+kind+'">'+
