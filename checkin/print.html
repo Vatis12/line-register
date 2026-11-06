@@ -79,6 +79,13 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
 .k-cta{font-weight:600;font-size:.16in;color:#1F5C46}
 .k-club{font-size:.13in;line-height:1.35;color:#3D5A4F}
 
+/* โหมดพิมพ์เฉพาะชื่อ: ลงกระดาษที่พิมพ์หัว-ท้ายไว้แล้ว (หมึกดำล้วน เร็ว) */
+.badge.text .b-head,.badge.text .b-foot{visibility:hidden}
+.badge.text .b-name,.badge.text .b-biz{color:#000}
+.badge.text .b-type{background:none!important;color:#000!important;border:.02in solid #000}
+#preview .badge.text .b-head,#preview .badge.text .b-foot{visibility:visible;opacity:.35}
+.badge.blank .b-ref{visibility:hidden}
+
 #printArea{display:none}
 @page{size:4in 6in;margin:0}
 @media print{
@@ -109,12 +116,15 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
       <div class="live"><span class="dot" id="dot"></span><span id="liveText">กำลังรอเช็กอิน… ป้ายจะพิมพ์ออกเอง</span></div>
       <div class="hint">เปิดหน้านี้ทิ้งไว้ตลอดงาน ห้ามปิดหรือย่อหน้าต่าง ถ้าอินเทอร์เน็ตหลุด ระบบจะต่อใหม่เองและพิมพ์ป้ายที่ค้างให้ครบ</div>
       <div class="msg wait" id="kioskTip">ถ้ามีหน้าต่างพิมพ์เด้งขึ้นทุกครั้ง แปลว่ายังไม่ได้เปิด Chrome แบบพิมพ์อัตโนมัติ ดูคู่มือข้อ 32</div>
-      <h2>วิธีพิมพ์ด้านหลัง (QR Facebook + LINE ชมรม)</h2>
+      <h2>ตอนเช็กอิน ให้พิมพ์อะไร</h2>
       <div class="mode">
-        <label><input type="radio" name="mode" value="front"><span><b>พิมพ์ด้านหลังไว้ล่วงหน้า (แนะนำ)</b><br><span class="hint">ด้านหลังเหมือนกันทุกใบ พิมพ์ทีเดียวก่อนวันงาน แล้วใส่กระดาษกลับด้านเข้าเครื่อง ระบบพิมพ์แค่ด้านหน้าตอนเช็กอิน</span></span></label>
-        <label><input type="radio" name="mode" value="both"><span><b>พิมพ์หน้า-หลังทีละคน</b><br><span class="hint">เฉพาะเครื่องที่พิมพ์ 2 หน้าเองได้ ต้องตั้ง "พิมพ์สองด้าน" ในหน้าต่างพิมพ์ครั้งแรก</span></span></label>
+        <label><input type="radio" name="fmode" value="text"><span><b>พิมพ์เฉพาะชื่อ บริษัท และประเภทการจอง (เร็ว · แนะนำ)</b><br><span class="hint">ใช้กับกระดาษที่พิมพ์หัว-ท้าย (โลโก้งาน) ไว้ล่วงหน้าแล้ว พิมพ์ตัวหนังสือสีดำลงช่องว่างตรงกลาง</span></span></label>
+        <label><input type="radio" name="fmode" value="full"><span><b>พิมพ์ป้ายเต็มใบ</b><br><span class="hint">ใช้กับกระดาษเปล่า พิมพ์โลโก้และสีทั้งใบ ช้ากว่า</span></span></label>
       </div>
-      <div class="row"><input type="number" id="backN" min="1" max="300" value="10" style="width:110px"><button class="btn ghost" id="backBtn" type="button" style="flex:1">พิมพ์ด้านหลังล่วงหน้า (จำนวนแผ่น)</button></div>
+      <h2>พิมพ์กระดาษเตรียมไว้ล่วงหน้า</h2>
+      <div class="row"><input type="number" id="blankN" min="1" max="300" value="10" style="width:110px" aria-label="จำนวนแผ่นแบบฟอร์มหัว-ท้าย"><button class="btn ghost" id="blankBtn" type="button" style="flex:1">พิมพ์แบบฟอร์มหัว-ท้าย (ด้านหน้า)</button></div>
+      <div class="row"><input type="number" id="backN" min="1" max="300" value="10" style="width:110px" aria-label="จำนวนแผ่นด้านหลัง"><button class="btn ghost" id="backBtn" type="button" style="flex:1">พิมพ์ด้านหลัง (QR Facebook + LINE)</button></div>
+      <div class="hint">พิมพ์ทีละไม่เกินจำนวนที่ถาดเครื่องพิมพ์รับได้ · ด้านหลังให้พิมพ์บนอีกด้านของแผ่นเดียวกัน (ลองกลับกระดาษ 1–2 แผ่นก่อน ว่าหัวกระดาษต้องหันทางไหน)</div>
       <h2>พิมพ์ซ้ำ / พิมพ์ด้วยมือ</h2>
       <div style="display:flex;gap:10px"><input type="text" id="rp" placeholder="เลขลงทะเบียน เช่น EB-001"><button class="btn" id="rpBtn" type="button" style="white-space:nowrap">พิมพ์ซ้ำ</button></div>
       <button class="btn ghost" id="testBtn" type="button">พิมพ์ป้ายทดสอบ</button>
@@ -125,7 +135,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
 
   <section class="card">
     <h2>ตัวอย่างป้าย (4×6 นิ้ว)</h2>
-    <div class="preview-wrap"><figure><div id="preview"></div><figcaption>ด้านหน้า</figcaption></figure><figure><div id="previewBack"></div><figcaption>ด้านหลัง</figcaption></figure></div>
+    <div class="preview-wrap"><figure><div id="preview"></div><figcaption id="pvCap">ด้านหน้า</figcaption></figure><figure><div id="previewBack"></div><figcaption>ด้านหลัง</figcaption></figure></div>
   </section>
 </div>
 
@@ -147,19 +157,21 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
       .then(function(j){if(j.error)throw new Error(j.error);return j});
   }
 
-  function badge(x){
+  function badge(x,kind){
+    kind=kind||fmode;
     var name=String(x.name||"").trim();
     var len=name.length, fs=len<=12?0.5:len<=18?0.42:len<=26?0.34:0.28;
     var tcls=x.type==="early"?"early":x.type==="supplier"?"supplier":"";
-    return '<div class="badge">'+
+    if(kind==="blank")name="";
+    return '<div class="badge '+kind+'">'+
       '<div class="b-head"><div class="b-logos"><img class="club" src="img/club.png" alt=""><span class="sep"></span><img class="div" src="img/diversey.png" alt=""></div>'+
       '<div class="b-title">Future of Laundry</div><div class="b-sub">Smart, Sustainable &amp; Profitable</div></div>'+
-      '<div class="b-body"><div class="b-name" style="font-size:'+fs+'in">'+esc(name)+'</div>'+
+      '<div class="b-body">'+(kind==="blank"?'':'<div class="b-name" style="font-size:'+fs+'in">'+name.split(/\s+/).map(function(w){return '<span style="display:inline-block;max-width:100%">'+esc(w)+'</span>'}).join(' ')+'</div>'+
       (x.biz?'<div class="b-biz">'+esc(x.biz)+'</div>':'')+
       '<div class="b-type '+tcls+'">'+esc(x.typeName||"")+'</div>'+
-      (x.shirt?'<div class="b-shirt">เสื้อไซส์ '+esc(x.shirt)+'</div>':'')+'</div>'+
+      (x.shirt&&kind==="full"?'<div class="b-shirt">เสื้อไซส์ '+esc(x.shirt)+'</div>':''))+'</div>'+
       '<div class="b-foot"><div class="b-spons"><img src="img/alliance.png" alt=""><img class="gs" src="img/greenseed.png" alt=""></div>'+
-      '<div class="b-when">เสาร์ 7 พ.ย. 2569 · Radisson Blu Sukhumvit</div><div class="b-ref">'+esc(x.ref||"")+'</div></div></div>';
+      '<div class="b-when">เสาร์ 7 พ.ย. 2569 · Radisson Blu Sukhumvit</div><div class="b-ref">'+(esc(x.ref||"")||"&nbsp;")+'</div></div></div>';
   }
   function back(){
     var fb='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#1877F2"/><path fill="#fff" d="M13.4 19.5v-6.1h2.1l.3-2.4h-2.4V9.5c0-.7.2-1.2 1.2-1.2h1.3V6.2c-.2 0-1-.1-1.9-.1-1.9 0-3.1 1.1-3.1 3.2V11H8.8v2.4h2.1v6.1z"/></svg>';
@@ -175,10 +187,11 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
       '<div class="k-club">ชมรมผู้ประกอบการซักรีด<br>Laundry &amp; Dryclean Club</div></div>';
   }
   $("previewBack").innerHTML=back();
-  var mode=load("fol-print-mode")||"front";
-  [].forEach.call(document.querySelectorAll('input[name=mode]'),function(r){r.checked=r.value===mode;r.onchange=function(){mode=r.value;store("fol-print-mode",mode)}});
   var sample={name:"สมชาย ใจดี",biz:"ร้านซักอบรีด ตัวอย่าง",type:"early",typeName:"Early Bird",shirt:"XL",ref:"EB-000"};
-  $("preview").innerHTML=badge(sample);
+  var fmode=load("fol-front-mode")||"text";
+  function showPreview(x){$("preview").innerHTML=badge(x||sample);$("pvCap").textContent=fmode==="text"?"ด้านหน้า (ส่วนจาง = พิมพ์ไว้แล้ว)":"ด้านหน้า"}
+  [].forEach.call(document.querySelectorAll('input[name=fmode]'),function(r){r.checked=r.value===fmode;r.onchange=function(){fmode=r.value;store("fol-front-mode",fmode);showPreview()}});
+  showPreview();
 
   // ลิงก์ระบบ
   var fromHash=(location.hash.match(/[#&]u=([^&]+)/)||[])[1];
@@ -221,8 +234,8 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
     if(printing||!queue.length)return;
     printing=true;
     var x=queue.shift();
-    $("printArea").innerHTML=x.html||(badge(x)+(mode==="both"?back():""));
-    if(!x.html)$("preview").innerHTML=badge(x);
+    $("printArea").innerHTML=x.html||badge(x);
+    if(!x.html)showPreview(x);
     var imgs=[].slice.call($("printArea").querySelectorAll("img"));
     Promise.all([document.fonts?document.fonts.ready:Promise.resolve()].concat(imgs.map(function(i){return i.complete?0:new Promise(function(ok){i.onload=i.onerror=ok})})))
       .then(function(){
@@ -251,6 +264,11 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
     var n=Math.max(1,Math.min(300,parseInt($("backN").value,10)||1)),s="";
     for(var i=0;i<n;i++)s+=back();
     queue.push({html:s,ref:"ด้านหลัง",name:n+" แผ่น"});next();
+  };
+  $("blankBtn").onclick=function(){
+    var n=Math.max(1,Math.min(300,parseInt($("blankN").value,10)||1)),s="";
+    for(var i=0;i<n;i++)s+=badge({},"blank");
+    queue.push({html:s,ref:"แบบฟอร์มหัว-ท้าย",name:n+" แผ่น"});next();
   };
   $("testBtn").onclick=function(){queue.push(sample);next()};
   function alertMsg(m){var d=document.createElement("div");d.className="msg err";d.textContent=m;$("log").insertBefore(d,$("log").firstChild);setTimeout(function(){d.remove()},5000)}
