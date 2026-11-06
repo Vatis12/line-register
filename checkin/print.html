@@ -222,7 +222,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
       r.items.forEach(function(x){if(x.seq>after){queue.push(x);after=x.seq}});
       store("fol-print-after",String(after));
       next();
-    }).catch(function(e){fails++;setLive(false,e.message)}).then(function(){timer=setTimeout(poll,fails?5000:2500)});
+    }).catch(function(e){fails++;setLive(false,e.message)}).then(function(){timer=setTimeout(poll,fails?4000:800)});
   }
   function setLive(ok,m){
     $("dot").className="dot"+(ok?"":" off");
@@ -242,8 +242,8 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
         setTimeout(function(){
           window.print();
           addLog(x);
-          setTimeout(function(){printing=false;next()},1200);
-        },150);
+          setTimeout(function(){printing=false;next()},300);
+        },30);
       });
   }
   function addLog(x){
