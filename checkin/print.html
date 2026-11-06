@@ -124,6 +124,8 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
       </div>
       <h2>พิมพ์กระดาษเตรียมไว้ล่วงหน้า</h2>
       <div class="row"><input type="number" id="blankN" min="1" max="300" value="10" style="width:110px" aria-label="จำนวนแผ่นแบบฟอร์มหัว-ท้าย"><button class="btn ghost" id="blankBtn" type="button" style="flex:1">พิมพ์แบบฟอร์มหัว-ท้าย (ด้านหน้า)</button></div>
+      <div class="row"><button class="btn ghost" id="preBtn" type="button" style="flex:1">พิมพ์ป้ายล่วงหน้า ทุกคนที่ลงทะเบียน (เรียงตามชื่อ)</button></div>
+      <div class="hint" id="preMsg"></div>
       <div class="row"><input type="number" id="backN" min="1" max="300" value="10" style="width:110px" aria-label="จำนวนแผ่นด้านหลัง"><button class="btn ghost" id="backBtn" type="button" style="flex:1">พิมพ์ด้านหลัง (QR Facebook + LINE)</button></div>
       <div class="hint">พิมพ์ทีละไม่เกินจำนวนที่ถาดเครื่องพิมพ์รับได้ · ด้านหลังให้พิมพ์บนอีกด้านของแผ่นเดียวกัน (ลองกลับกระดาษ 1–2 แผ่นก่อน ว่าหัวกระดาษต้องหันทางไหน)</div>
       <h2>พิมพ์ซ้ำ / พิมพ์ด้วยมือ</h2>
@@ -270,6 +272,30 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
     var n=Math.max(1,Math.min(300,parseInt($("blankN").value,10)||1)),s="";
     for(var i=0;i<n;i++)s+=badge({},"blank");
     queue.push({html:s,ref:"แบบฟอร์มหัว-ท้าย",name:n+" แผ่น"});next();
+  };
+  $("preBtn").onclick=function(){
+    var b=$("preBtn"),m=$("preMsg"),all=[],pre=["EB","RG","SP"],pi=0,n=1,miss=0;
+    b.disabled=true;m.textContent="กำลังดึงรายชื่อ…";
+    function step(){
+      if(pi>=pre.length)return done();
+      var ref=pre[pi]+"-"+("00"+n).slice(-3);
+      call({api:"lookup",q:ref}).then(function(j){
+        var r=(j.results||[])[0];
+        if(r){miss=0;if(!/ยกเลิก/.test(r.status||""))all.push(r)}else miss++;
+        m.textContent="ดึงแล้ว "+all.length+" คน ("+ref+")";
+        if(miss>=6){pi++;n=1;miss=0}else n++;
+        step();
+      }).catch(function(e){m.textContent="ผิดพลาด: "+e.message;b.disabled=false});
+    }
+    function done(){
+      b.disabled=false;
+      if(!all.length){m.textContent="ไม่พบรายชื่อ";return}
+      all.sort(function(a,c){return String(a.name).localeCompare(String(c.name),"th")});
+      var h="";all.forEach(function(x){h+=badge(x,"text")});
+      m.textContent="พบ "+all.length+" คน กำลังส่งพิมพ์ ("+all.length+" แผ่น)";
+      queue.push({html:h,ref:"ล่วงหน้า",name:all.length+" แผ่น"});next();
+    }
+    step();
   };
   $("testBtn").onclick=function(){queue.push(sample);next()};
   function alertMsg(m){var d=document.createElement("div");d.className="msg err";d.textContent=m;$("log").insertBefore(d,$("log").firstChild);setTimeout(function(){d.remove()},5000)}
