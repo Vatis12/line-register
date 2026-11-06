@@ -81,7 +81,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
 
 /* โหมดพิมพ์เฉพาะชื่อ: ลงกระดาษที่พิมพ์หัว-ท้ายไว้แล้ว (หมึกดำล้วน เร็ว) */
 .badge.text .b-head,.badge.text .b-foot{visibility:hidden}
-.badge.text .b-name,.badge.text .b-biz{color:#000}
+.badge.text .b-name,.badge.text .b-biz,.badge.text .b-shirt{color:#000}
 .badge.text .b-type{background:none!important;color:#000!important;border:.02in solid #000}
 #preview .badge.text .b-head,#preview .badge.text .b-foot{visibility:visible;opacity:.35}
 .badge.blank .b-ref{visibility:hidden}
@@ -169,7 +169,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #F2C063;outline-offse
       '<div class="b-body">'+(kind==="blank"?'':'<div class="b-name" style="font-size:'+fs+'in">'+name.split(/\s+/).map(function(w){return '<span style="display:inline-block;max-width:100%">'+esc(w)+'</span>'}).join(' ')+'</div>'+
       (x.biz?'<div class="b-biz">'+esc(x.biz)+'</div>':'')+
       '<div class="b-type '+tcls+'">'+esc(x.typeName||"")+'</div>'+
-      (x.shirt&&kind==="full"?'<div class="b-shirt">เสื้อไซส์ '+esc(x.shirt)+'</div>':''))+'</div>'+
+      (x.shirt?'<div class="b-shirt">เสื้อไซส์ '+esc(x.shirt)+'</div>':''))+'</div>'+
       '<div class="b-foot"><div class="b-spons"><img src="img/alliance.png" alt=""><img class="gs" src="img/greenseed.png" alt=""></div>'+
       '<div class="b-when">เสาร์ 7 พ.ย. 2569 · Radisson Blu Sukhumvit</div><div class="b-ref">'+(esc(x.ref||"")||"&nbsp;")+'</div></div></div>';
   }
